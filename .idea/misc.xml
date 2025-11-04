@@ -3,7 +3,6 @@
   <component name="ComposerSettings">
     <execution />
   </component>
-  <component name="KubernetesApiProvider"><![CDATA[{}]]></component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_24_PREVIEW" project-jdk-name="openjdk-24" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
