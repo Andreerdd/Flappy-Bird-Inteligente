@@ -2,7 +2,6 @@ package flappy;
 
 import processing.core.PImage;
 
-import java.io.File;
 import java.util.HashMap;
 
 public class SpriteManager {
@@ -10,37 +9,11 @@ public class SpriteManager {
 
 	public static void loadSprites() {
 		Debug.log("LOADING ASSETS");
-		File folder = new File("assets/sprites");
-		File[] files = folder.listFiles();
+		String[] spriteNames = { "bird_base", "bird_overlay1", "bird_overlay2", "cloud1", "cloud2", "cloud3", "pipe_body", "pipe_head_down", "pipe_head_up" };
 
-		if(files != null) {
-			for(File f : files) {
-				if(f.isDirectory()) {
-					loadSpritesSubFolder(f.getName());
-				} else if (f.isFile() && f.getName().toLowerCase().endsWith(".png")) {
-					String name = f.getName().substring(0, f.getName().lastIndexOf("."));
-					Debug.log("LOADING ASSET: `assets/sprites/" + f.getName() + "`");
-					sprites.put(name, Flappy.app.loadImage("assets/sprites/" + f.getName()));
-				}
-			}
-		} else {
-			Debug.error("Folder \'" + folder.getAbsolutePath() + "\' does not exist!");
-		}
-	}
-
-	public static void loadSpritesSubFolder(String folderName) {
-		String path = "assets/sprites/" + folderName;
-		File folder = new File(path);
-		File[] files = folder.listFiles();
-
-		if (files != null) {
-			for (File f : files) {
-				if (f.isFile() && f.getName().toLowerCase().endsWith(".png")) {
-					String name = f.getName().substring(0, f.getName().lastIndexOf("."));
-					Debug.log("LOADING ASSET: `" + path + "/" + f.getName() + "`");
-					sprites.put(folderName + "/" + name, Flappy.app.loadImage(path + "/" + f.getName()));
-				}
-			}
+		for(String name : spriteNames) {
+			Debug.log("LOADING ASSET: `assets/sprites/" + name + "`");
+			sprites.put(name, Flappy.app.loadImage("assets/sprites/" + name + ".png"));
 		}
 	}
 
