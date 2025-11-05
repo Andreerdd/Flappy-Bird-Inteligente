@@ -95,7 +95,6 @@ public class Passaro {
 		if(perdeu) {
 			pular();
 			Populacao.passarosVivos--;
-			Debug.log("Passaros vivos: " + Populacao.passarosVivos);
 		}
 
 		if(proximoCano != null) {
@@ -104,7 +103,6 @@ public class Passaro {
 				Populacao.pontuacaoMaximaGeracao = pontos;
 				Populacao.pontuacaoMaxima = Flappy.max(Populacao.pontuacaoMaxima, pontos);
 				pontos++;
-				Debug.log("Pontos: " + pontos);
 			}
 		}
 	}

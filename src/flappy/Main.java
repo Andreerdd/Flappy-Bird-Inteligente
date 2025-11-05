@@ -19,7 +19,20 @@ public class Main {
 				return;
 			}
 		}
+
+		boolean reinicio;
+		int reinicioInt = JOptionPane.showConfirmDialog(null, "Deseja reinício automático do material genético?");
+		if(reinicioInt == 0)
+			reinicio  = true;
+		else if(reinicioInt == 1)
+			reinicio  = false;
+		else return;
+
+		Populacao.REINICIO_AUTOMATICO = reinicio;
 		Populacao.NUMERO_PASSAROS = n;
+
+		Debug.log("NÚMERO DE PORCOS = " + n);
+		Debug.log("REINÍCIO AUTOMÁTICO " + (reinicio ? "LIGADO" : "DESLIGADO"));
 		PApplet.main("flappy.Flappy");
 	}
 }

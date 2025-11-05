@@ -20,7 +20,10 @@ public class Flappy extends PApplet {
 
 	private int escalaTempo = 1;
 
-	public float tempoSimulado = 0f;
+	public float tempoSimuladoSegundos = 0f;
+	public int tempoSimuladoMinutos = 0;
+	public int tempoSimuladoHoras = 0;
+	public int tempoSimuladoDias = 0;
 
 	public ArrayList<Cano> canos = new ArrayList<>();
 
@@ -39,7 +42,7 @@ public class Flappy extends PApplet {
 		lastMillis = millis();
 		deltaTime = 1;
 
-		tempoSimulado = millis() / 1000f;
+		tempoSimuladoSegundos = millis() / 1000f;
 
 		Populacao.gerarPopulacao();
 	}
@@ -49,11 +52,23 @@ public class Flappy extends PApplet {
 		Cano.velocidadeCano = Cano.VELOCIDADE_INICIAL;
 		Cano.multAberturaCano = Cano.MULT_ABERTURA_INICIAL;
 
-		adicionarCano();
+		adicionarCano(width);
+		adicionarCano(width * 0.5f);
+		adicionarCano(width * 0.75f);
+		adicionarCano(width * 1.25f);
 	}
 
 	public void adicionarCano() {
 		canos.add(new Cano());
+		contadorSurgimentoCano = 0;
+
+		Cano.velocidadeCano = min(Cano.VELOCIDADE_MAXIMA, Cano.velocidadeCano + 1f);
+		Cano.multAberturaCano = map(Cano.velocidadeCano, Cano.VELOCIDADE_INICIAL, Cano.VELOCIDADE_MAXIMA, Cano.MULT_ABERTURA_INICIAL, Cano.MULT_ABERTURA_MAXIMA);
+
+		acharProximoCano();
+	}
+	public void adicionarCano(float posx) {
+		canos.add(new Cano(posx));
 		contadorSurgimentoCano = 0;
 
 		Cano.velocidadeCano = min(Cano.VELOCIDADE_MAXIMA, Cano.velocidadeCano + 1f);
@@ -90,7 +105,19 @@ public class Flappy extends PApplet {
 
 			if(Populacao.passarosVivos == 0) Populacao.reproduzirPopulacao();
 
-			tempoSimulado += deltaTime;
+			tempoSimuladoSegundos += deltaTime;
+			while(tempoSimuladoSegundos > 60) {
+				tempoSimuladoSegundos -= 60;
+				tempoSimuladoMinutos++;
+				while(tempoSimuladoMinutos > 60) {
+					tempoSimuladoMinutos -= 60;
+					tempoSimuladoHoras++;
+					while(tempoSimuladoHoras > 24) {
+						tempoSimuladoHoras -= 24;
+						tempoSimuladoDias++;
+					}
+				}
+			}
 		}
 
 		for(int j = -1; j <= 1; j++)
@@ -118,7 +145,7 @@ public class Flappy extends PApplet {
 		text("Velocidade da simulação: " + escalaTempo ,width - 4, 20);
 		textAlign(LEFT, BOTTOM);
 		text("Tempo de execução: " + nf(millis() / 1000f, 0, 1) + "s" ,4, height - 4);
-		text("Tempo simulado: " + nf(tempoSimulado, 0, 1) + "s" ,4, height - 20);
+		text("Tempo simulado: " + tempoSimuladoDias + "d " + tempoSimuladoHoras + "h " + tempoSimuladoMinutos + "m " + nf(tempoSimuladoSegundos, 0, 1) + "s" ,4, height - 20);
 	}
 
 	private void acharProximoCano() {
@@ -145,9 +172,13 @@ public class Flappy extends PApplet {
 		if(key == '_')
 			escalaTempo = max(escalaTempo / 10, 1);
 		if(key > '0' && key <= '9')
-			escalaTempo = (key - '0') * 10;
+			if(escalaTempo != (key - '0') * 10)
+				escalaTempo = (key - '0') * 10;
+			else escalaTempo = 1;
 		if(key == '0')
-			escalaTempo = 100;
+			if(escalaTempo != 100)
+				escalaTempo = 100;
+			else escalaTempo = 1;
 		if(key == ' ')
 			if(escalaTempo > 0) escalaTempo = 0;
 			else escalaTempo = 1;
