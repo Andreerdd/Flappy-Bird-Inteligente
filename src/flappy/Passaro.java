@@ -8,21 +8,40 @@ public class Passaro {
 	public static final float GRAVIDADE = 350f;
 	public static final int POSICAO_X = 160;
 
-	int hue;
+	public static Cano proximoCano;
+	public Pesos pesos;
 
-	public Passaro() {
-		hue = (int)Flappy.app.random(360);
+	public int pontos = 1;
+	public boolean perdeu;
+
+	public static final float TEMPO_BATER_ASAS = 0.05f;
+	public float baterAsas = 0;
+
+	float hue;
+
+	public Passaro(float hue) {
+		this.hue = hue;
+		y = Flappy.app.height / 2f;
+		pesos = new Pesos();
+	}
+
+	public Passaro(Pesos pesos, float hue) {
+		this.pesos = pesos;
+		this.hue = hue;
 		y = Flappy.app.height / 2f;
 	}
 
 	public void pular() {
 		velocidade = -FORCA_PULO;
+		baterAsas = TEMPO_BATER_ASAS;
+//		Debug.log("Pulou!");
 	}
 
 	boolean checarColisao() {
+		if(y - 8 < 0 || y + 8 > Flappy.app.height) return true;
 		for(Cano cano : Flappy.app.canos) {
-			if(POSICAO_X - 16 > cano.pos.x && POSICAO_X + 16 < cano.pos.x + cano.largura)
-				if(y + 8 < cano.pos.y - cano.abertura / 2 || y + 8 > cano.pos.y + cano.abertura / 2) {
+			if(POSICAO_X - 16 < cano.pos.x + cano.largura && POSICAO_X + 16 > cano.pos.x)
+				if(y + 8 > cano.pos.y + cano.abertura / 2 || y - 8 < cano.pos.y - cano.abertura / 2) {
 					return true;
 				}
 		}
@@ -30,34 +49,51 @@ public class Passaro {
 		return false;
 	}
 
-	boolean checarColisao(int i, int j) {
-		for(Cano cano : Flappy.app.canos) {
-			if(i > cano.pos.x && i < cano.pos.x + cano.largura)
-				if(j < cano.pos.y - cano.abertura / 2 || j > cano.pos.y + cano.abertura / 2) {
-					return true;
-				}
-		}
+	public boolean calcularPular() {
+		if(proximoCano == null) return false;
+		float posicaoY = y;
+		float distanciaX = POSICAO_X - proximoCano.pos.x;
+		float distanciaY = posicaoY - proximoCano.pos.y;
+		float largura = proximoCano.largura;
+		float abertura = proximoCano.abertura;
 
-		return false;
+		float total =
+			posicaoY * pesos.posicaoY +
+			distanciaY * pesos.distanciaY +
+			distanciaX * pesos.distanciaX +
+			largura * pesos.largura +
+			abertura * pesos.abertura;
+
+		return total > pesos.totalPulo;
 	}
 
 	public void atualizar() {
+		if(perdeu) return;
 		velocidade += GRAVIDADE * Flappy.app.deltaTime;
 		y += velocidade * Flappy.app.deltaTime;
 
-		if(checarColisao())
-			Flappy.app.tint(0, 80, 100);
-		else
-			Flappy.app.tint(120, 80, 100);
+		Flappy.app.tint(hue, 80, 100);
 		Flappy.app.image(SpriteManager.get("bird_base"), POSICAO_X - 16, y - 16, 32, 32);
 		Flappy.app.noTint();
+		if(baterAsas > 0) Flappy.app.image(SpriteManager.get("bird_overlay2"), POSICAO_X - 16, y - 16, 32, 32);
+		else {
+			Flappy.app.image(SpriteManager.get("bird_overlay1"), POSICAO_X - 16, y - 16, 32, 32);
+		}
+		baterAsas -= Flappy.app.deltaTime;
 
-//		if(checarColisao()) Debug.warning("Passaro colidiu!");
+		perdeu = checarColisao();
+		if(perdeu) {
+			Populacao.passarosVivos--;
+			Debug.log("Passaros vivos: " + Populacao.passarosVivos);
+		}
 
-//		Flappy.app.fill(160, 100, 100);
-//		for(int i = 0; i < Flappy.app.width; i += 8)
-//			for(int j = 0; j < Flappy.app.height; j += 8)
-//				if(checarColisao(i, j))
-//					Flappy.app.circle(i, j, 6);
+		if(proximoCano != null) {
+			if(calcularPular()) pular();
+			if(POSICAO_X > proximoCano.pos.x + proximoCano.largura) {
+				Populacao.pontuacaoMaxima = pontos;
+				pontos++;
+				Debug.log("Pontos: " + pontos);
+			}
+		}
 	}
 }

@@ -9,7 +9,7 @@ public class Cano {
 
 	public int hue;
 
-	public final float VELOCIDADE_CANO = 250f;
+	public static final float VELOCIDADE_CANO = 250f;
 
 	public Cano(float altura, float largura, float abertura) {
 		this.pos = new PVector(Flappy.app.width, altura);
