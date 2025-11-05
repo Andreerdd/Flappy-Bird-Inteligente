@@ -141,9 +141,9 @@ public class Flappy extends PApplet {
 		if(key == '-')
 			escalaTempo = max(escalaTempo - 1, 1);
 		if(key == '+')
-			escalaTempo += 5;
+			escalaTempo *= 10;
 		if(key == '_')
-			escalaTempo = max(escalaTempo - 5, 1);
+			escalaTempo = max(escalaTempo / 10, 1);
 		if(key > '0' && key <= '9')
 			escalaTempo = (key - '0') * 10;
 		if(key == '0')

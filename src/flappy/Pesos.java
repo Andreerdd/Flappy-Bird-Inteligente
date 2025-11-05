@@ -6,8 +6,8 @@ public class Pesos {
 	public float velocidadeCano;
 	public float totalPulo;
 
-	public static final float CHANCE_MUTACAO = 0.07f;
-	public static final float EFEITO_MUTACAO = 0.0001f;
+	public static final float CHANCE_MUTACAO = 0.1f;
+	public static final float EFEITO_MUTACAO = 0.0025f;
 
 	public Pesos(float distanciaX, float distanciaY, float largura, float abertura, float totalPulo, float velocidadeCano) {
 		this.distanciaX = distanciaX;
