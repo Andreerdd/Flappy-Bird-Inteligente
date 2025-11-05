@@ -9,7 +9,7 @@ public class SpriteManager {
 
 	public static void loadSprites() {
 		Debug.log("LOADING ASSETS");
-		String[] spriteNames = { "bird_base", "bird_overlay1", "bird_overlay2", "cloud1", "cloud2", "cloud3", "pipe_body", "pipe_head_down", "pipe_head_up" };
+		String[] spriteNames = { "bird_base1", "bird_base2", "bird_overlay1", "bird_overlay2", "cloud1", "cloud2", "cloud3", "pipe_body", "pipe_head_down", "pipe_head_up" };
 
 		for(String name : spriteNames) {
 			Debug.log("LOADING ASSET: `assets/sprites/" + name + "`");

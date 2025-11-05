@@ -9,10 +9,12 @@ public class Populacao {
 	public static int passarosVivos;
 	public static int geracao;
 	public static int pontuacaoMaxima;
+	public static int pontuacaoMaximaGeracao;
 
 	public static void gerarPopulacao() {
 		passaros.clear();
 		geracao = 1;
+		pontuacaoMaximaGeracao = 1;
 		pontuacaoMaxima = 1;
 		Flappy.app.reiniciarCanos();
 		passarosVivos = NUMERO_PASSAROS;
@@ -21,14 +23,14 @@ public class Populacao {
 	}
 
 	public static void reproduzirPopulacao() {
-		pontuacaoMaxima = 1;
+		pontuacaoMaximaGeracao = 1;
 		geracao++;
 		Flappy.app.reiniciarCanos();
 		passarosVivos = NUMERO_PASSAROS;
 
 		for(Passaro passaro : passaros) {
-			float pontuacaoNormalizada = passaro.pontos * 1f / pontuacaoMaxima;
-			for(int i = 0; i < 25 * Flappy.pow((float)passaro.pontos / pontuacaoMaxima, 2); i++)
+			float pontuacaoNormalizada = passaro.pontos * 2f / pontuacaoMaximaGeracao;
+			for(int i = 0; i < 1 + Flappy.pow(pontuacaoNormalizada, 2); i++)
 				piscinaDeAcasalamento.add(passaro);
 		}
 

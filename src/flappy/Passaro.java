@@ -16,7 +16,7 @@ public class Passaro {
 	public int pontos = 1;
 	public boolean perdeu;
 
-	public static final float TEMPO_BATER_ASAS = 0.1f;
+	public static final float TEMPO_BATER_ASAS = 0.15f;
 	public float baterAsas = 0;
 
 	float hue;
@@ -54,37 +54,47 @@ public class Passaro {
 	public boolean calcularPular() {
 		if(proximoCano == null) return false;
 		float posicaoY = y;
-		float distanciaX = POSICAO_X - proximoCano.pos.x;
+		float distanciaX = POSICAO_X - proximoCano.pos.x + proximoCano.largura;
 		float distanciaY = posicaoY - proximoCano.pos.y;
 		float largura = proximoCano.largura;
 		float abertura = proximoCano.abertura;
+		float velocidadeCano = Cano.velocidadeCano;
 
 		float total =
 			posicaoY * pesos.posicaoY +
 			distanciaY * pesos.distanciaY +
 			distanciaX * pesos.distanciaX +
 			largura * pesos.largura +
-			abertura * pesos.abertura;
+			abertura * pesos.abertura +
+			velocidadeCano * pesos.velocidadeCano;
 
 		return total > pesos.totalPulo;
 	}
 
+	public void exibir() {
+		if(perdeu) {
+			Flappy.app.tint(hue, 20, 60);
+			Flappy.app.image(SpriteManager.get("bird_base2"), POSICAO_X - 16, y - 16, 32, 32);
+		} else {
+			Flappy.app.tint(hue, 80, 100);
+			Flappy.app.image(SpriteManager.get("bird_base1"), POSICAO_X - 16, y - 16, 32, 32);
+		}
+		Flappy.app.noTint();
+		if(baterAsas > 0) Flappy.app.image(SpriteManager.get("bird_overlay2"), POSICAO_X - 16, y - 16, 32, 32);
+		else Flappy.app.image(SpriteManager.get("bird_overlay1"), POSICAO_X - 16, y - 16, 32, 32);
+	}
+
 	public void atualizar() {
-		if(perdeu) return;
 		velocidade += GRAVIDADE * Flappy.app.deltaTime;
 		y += velocidade * Flappy.app.deltaTime;
 
-		Flappy.app.tint(hue, 80, 100);
-		Flappy.app.image(SpriteManager.get("bird_base"), POSICAO_X - 16, y - 16, 32, 32);
-		Flappy.app.noTint();
-		if(baterAsas > 0) Flappy.app.image(SpriteManager.get("bird_overlay2"), POSICAO_X - 16, y - 16, 32, 32);
-		else {
-			Flappy.app.image(SpriteManager.get("bird_overlay1"), POSICAO_X - 16, y - 16, 32, 32);
-		}
+		if(perdeu) return;
+
 		baterAsas -= Flappy.app.deltaTime;
 
 		perdeu = checarColisao();
 		if(perdeu) {
+			pular();
 			Populacao.passarosVivos--;
 			Debug.log("Passaros vivos: " + Populacao.passarosVivos);
 		}
@@ -92,7 +102,8 @@ public class Passaro {
 		if(proximoCano != null) {
 			if(calcularPular()) pular();
 			if(POSICAO_X > proximoCano.pos.x + proximoCano.largura) {
-				Populacao.pontuacaoMaxima = pontos;
+				Populacao.pontuacaoMaximaGeracao = pontos;
+				Populacao.pontuacaoMaxima = Flappy.max(Populacao.pontuacaoMaxima, pontos);
 				pontos++;
 				Debug.log("Pontos: " + pontos);
 			}

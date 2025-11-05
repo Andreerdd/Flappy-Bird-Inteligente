@@ -10,13 +10,15 @@ public class Flappy extends PApplet {
 	public float deltaTime;
 	private int lastMillis;
 
-	public final int TEMPO_SURGIMENTO_CANOS = 1500;
-	private int ultimoCanoMillis;
+	public final float TEMPO_SURGIMENTO_CANOS = 1.5f;
+	private float contadorSurgimentoCano = 0;
 
 	private final float CLOUD_SPEED = 125f;
 	private float cloud1pos = 0;
 	private float cloud2pos = 0;
 	private float cloud3pos = 0;
+
+	private int escalaTempo = 1;
 
 	private boolean paused = true;
 
@@ -43,11 +45,13 @@ public class Flappy extends PApplet {
 	public void reiniciarCanos() {
 		canos.clear();
 		adicionarCano();
+		Cano.velocidadeCano = Cano.VELOCIDADE_INICIAL;
 	}
 
 	public void adicionarCano() {
 		canos.add(new Cano());
-		ultimoCanoMillis = millis();
+		contadorSurgimentoCano = 0;
+		Cano.velocidadeCano = min(Cano.VELOCIDADE_MAXIMA, Cano.velocidadeCano + 5);
 
 		acharProximoCano();
 	}
@@ -55,32 +59,42 @@ public class Flappy extends PApplet {
 	public void draw() {
 		background(201, 58, 100);
 
+		int curMillis = millis();
+		deltaTime = (curMillis - lastMillis) / 1000f;
+		lastMillis = curMillis;
+
+		for(int j = 0; j < escalaTempo; j++) {
+			cloud1pos = (cloud1pos + -CLOUD_SPEED * deltaTime / 1) % width;
+			cloud2pos = (cloud2pos + -CLOUD_SPEED * deltaTime / 2) % width;
+			cloud3pos = (cloud3pos + -CLOUD_SPEED * deltaTime / 4) % width;
+
+			for(int i = canos.size() - 1; i >= 0; i--) {
+				Cano cano = canos.get(i);
+				cano.atualizar();
+				if(cano.pos.x + cano.largura < 0) canos.remove(cano);
+			}
+
+			for(Passaro passaro : Populacao.passaros)
+				passaro.atualizar();
+
+			if(contadorSurgimentoCano > TEMPO_SURGIMENTO_CANOS) adicionarCano();
+			contadorSurgimentoCano += deltaTime;
+
+			acharProximoCano();
+
+			if(Populacao.passarosVivos == 0) Populacao.reproduzirPopulacao();
+		}
+
 		for(int j = -1; j <= 1; j++)
 			image(SpriteManager.get("cloud3"), j * width + cloud3pos, 0, width, height);
 		for(int j = -1; j <= 1; j++)
 			image(SpriteManager.get("cloud2"), j * width + cloud2pos, 0, width, height);
 
-		int curMillis = millis();
-		deltaTime = (curMillis - lastMillis) / 1000f;
-		lastMillis = curMillis;
-
-		cloud1pos = (cloud1pos + -CLOUD_SPEED * deltaTime / 1) % width;
-		cloud2pos = (cloud2pos + -CLOUD_SPEED * deltaTime / 2) % width;
-		cloud3pos = (cloud3pos + -CLOUD_SPEED * deltaTime / 4) % width;
-
-		for(int i = canos.size() - 1; i >= 0; i--) {
-			Cano cano = canos.get(i);
-			cano.atualizar();
-			if(cano.pos.x + cano.largura < 0) canos.remove(cano);
-		}
-
 		for(Passaro passaro : Populacao.passaros)
-			passaro.atualizar();
+			passaro.exibir();
 
-		if(Populacao.passarosVivos == 0) Populacao.reproduzirPopulacao();
-
-		if(curMillis > ultimoCanoMillis + TEMPO_SURGIMENTO_CANOS) adicionarCano();
-		acharProximoCano();
+		for(Cano cano : canos)
+			cano.exibir();
 
 		for(int j = -1; j <= 1; j++)
 			image(SpriteManager.get("cloud1"), j * width + cloud1pos, 0, width, height);
@@ -89,7 +103,10 @@ public class Flappy extends PApplet {
 		textAlign(LEFT, TOP);
 		text("Geração: " + Populacao.geracao ,4, 4);
 		text("Vivos: " + Populacao.passarosVivos ,4, 20);
-		text("Pontuação máxima: " + (Populacao.pontuacaoMaxima - 1) ,4, 36);
+		text("Pontuação: " + (Populacao.pontuacaoMaximaGeracao - 0) ,4, 36);
+		text("Velocidade do cano: " + nf(Cano.velocidadeCano, 0, 1) ,4, 52);
+		textAlign(RIGHT, TOP);
+		text("Pontuação Máxima: " + (Populacao.pontuacaoMaxima - 0) ,width - 4, 4);
 	}
 
 	private void acharProximoCano() {
@@ -107,9 +124,9 @@ public class Flappy extends PApplet {
 	public void keyPressed() {
 		if(key == 'r')
 			Populacao.gerarPopulacao();
-	}
-
-	public void mousePressed() {
-		canos.add(new Cano());
+		if(key == '=')
+			escalaTempo++;
+		if(key == '-')
+			escalaTempo = max(escalaTempo - 1, 1);
 	}
 }
