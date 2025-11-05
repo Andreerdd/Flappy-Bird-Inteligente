@@ -7,7 +7,7 @@ public class Passaro {
 	public float velocidade;
 
 	public static final float FORCA_PULO = 175f;
-	public static final float GRAVIDADE = 350f;
+	public static final float GRAVIDADE = 700f;
 	public static final int POSICAO_X = 160;
 
 	public static Cano proximoCano;
@@ -61,12 +61,11 @@ public class Passaro {
 		float velocidadeCano = Cano.velocidadeCano;
 
 		float total =
-			posicaoY * pesos.posicaoY +
 			distanciaY * pesos.distanciaY +
 			distanciaX * pesos.distanciaX +
 			largura * pesos.largura +
 			abertura * pesos.abertura +
-			velocidadeCano * pesos.velocidadeCano;
+			velocidadeCano * pesos.velocidadeCano / Cano.VELOCIDADE_MAXIMA;
 
 		return total > pesos.totalPulo;
 	}

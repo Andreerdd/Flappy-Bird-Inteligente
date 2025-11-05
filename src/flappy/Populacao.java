@@ -16,6 +16,7 @@ public class Populacao {
 		geracao = 1;
 		pontuacaoMaximaGeracao = 1;
 		pontuacaoMaxima = 1;
+		Flappy.app.tempoSimulado = 0f;
 		Flappy.app.reiniciarCanos();
 		passarosVivos = NUMERO_PASSAROS;
 		for(int i = 0; i < NUMERO_PASSAROS; i++)

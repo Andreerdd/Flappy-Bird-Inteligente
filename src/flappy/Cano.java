@@ -9,20 +9,24 @@ public class Cano {
 
 	public int hue;
 
-	public static float velocidadeCano = 250f;
+	public static float velocidadeCano;
 	public static final float VELOCIDADE_INICIAL = 250f;
-	public static final float VELOCIDADE_MAXIMA = 500f;
+	public static final float VELOCIDADE_MAXIMA = 750f;
+
+	public static float multAberturaCano;
+	public static final float MULT_ABERTURA_INICIAL = 1f;
+	public static final float MULT_ABERTURA_MAXIMA = 3f;
 
 	public Cano(float altura, float largura, float abertura) {
-		this.pos = new PVector(Flappy.app.width, altura);
+		this.pos = new PVector(Flappy.app.width * 1.5f, altura);
 		this.largura = largura;
 		this.abertura = abertura;
 		this.hue = (int)(Flappy.app.frameCount / 250f % 360);
 	}
 
 	public Cano() {
-		this.abertura = Flappy.app.random(96, 192);
-		this.pos = new PVector(Flappy.app.width, Flappy.app.random(128 + abertura / 2, Flappy.app.height - 128 - abertura / 2));
+		this.abertura = Flappy.app.random(96, 192) / multAberturaCano;
+		this.pos = new PVector(Flappy.app.width * 1.5f, Flappy.app.random(128 + abertura / 2, Flappy.app.height - 128 - abertura / 2));
 		this.largura = Flappy.app.random(64, 96);
 		this.hue = (int)(Flappy.app.frameCount / 250f % 360);
 	}
