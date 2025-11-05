@@ -1,5 +1,7 @@
 package flappy;
 
+import processing.core.PVector;
+
 public class Passaro {
 	public float y;
 	public float velocidade;
@@ -14,7 +16,7 @@ public class Passaro {
 	public int pontos = 1;
 	public boolean perdeu;
 
-	public static final float TEMPO_BATER_ASAS = 0.05f;
+	public static final float TEMPO_BATER_ASAS = 0.1f;
 	public float baterAsas = 0;
 
 	float hue;
@@ -40,7 +42,7 @@ public class Passaro {
 	boolean checarColisao() {
 		if(y - 8 < 0 || y + 8 > Flappy.app.height) return true;
 		for(Cano cano : Flappy.app.canos) {
-			if(POSICAO_X - 16 < cano.pos.x + cano.largura && POSICAO_X + 16 > cano.pos.x)
+			if(POSICAO_X - 12 < cano.pos.x + cano.largura && POSICAO_X + 12 > cano.pos.x)
 				if(y + 8 > cano.pos.y + cano.abertura / 2 || y - 8 < cano.pos.y - cano.abertura / 2) {
 					return true;
 				}

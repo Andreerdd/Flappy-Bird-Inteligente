@@ -27,7 +27,7 @@ public class Populacao {
 		passarosVivos = NUMERO_PASSAROS;
 
 		for(Passaro passaro : passaros) {
-			float pontuacaoNormalizada = passaro.pontos / pontuacaoMaxima;
+			float pontuacaoNormalizada = passaro.pontos * 1f / pontuacaoMaxima;
 			for(int i = 0; i < 25 * Flappy.pow((float)passaro.pontos / pontuacaoMaxima, 2); i++)
 				piscinaDeAcasalamento.add(passaro);
 		}
