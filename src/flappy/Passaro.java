@@ -72,7 +72,7 @@ public class Passaro {
 
 	public void exibir() {
 		if(perdeu) {
-			Flappy.app.tint(hue, 20, 60);
+			Flappy.app.tint(hue, 60, 60);
 			Flappy.app.image(SpriteManager.get("bird_base2"), POSICAO_X - 16, y - 16, 32, 32);
 		} else {
 			Flappy.app.tint(hue, 80, 100);
