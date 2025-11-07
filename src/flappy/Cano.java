@@ -49,5 +49,7 @@ public class Cano {
 
 	public void atualizar() {
 		pos.x -= Flappy.app.deltaTime * velocidadeCano;
+		if(pos.x + largura + 32 < Passaro.POSICAO_X)
+			abertura += Flappy.app.deltaTime * 250000f / (pos.x + largura);
 	}
 }

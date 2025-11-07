@@ -22,14 +22,16 @@ public class Passaro {
 	float hue;
 
 	public Passaro(float hue) {
-		this.hue = hue;
+//		this.hue = hue;
+		this.hue = Flappy.app.random(360);
 		y = Flappy.app.height / 2f;
 		pesos = new Pesos();
 	}
 
 	public Passaro(Pesos pesos, float hue) {
 		this.pesos = pesos;
-		this.hue = hue;
+//		this.hue = hue;
+		this.hue = Flappy.app.random(360);
 		y = Flappy.app.height / 2f;
 	}
 
