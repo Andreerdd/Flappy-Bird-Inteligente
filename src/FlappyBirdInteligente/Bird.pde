@@ -1,5 +1,5 @@
 /**
- * Classe responsável pelo pássaro (Flappy Bird).
+ * Classe responsável pelo pássaro (Porco).
  */
 
 class Bird {
